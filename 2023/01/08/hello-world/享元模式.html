@@ -1,0 +1,674 @@
+<!doctype html>
+      <html>
+      <head>
+        <meta charset="utf-8"/>
+        <title>享元模式</title>
+        
+        <style>
+          html, body { margin: 0; padding: 0; background-color: #ffffff; }
+          .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
+          @media (max-width: 767px) { .markdown-body { padding: 15px; } }
+          .markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  line-height: 1.5;
+  color: #24292e;
+  font-family: system-ui, -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;;
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body details {
+  display: block;
+}
+
+.markdown-body summary {
+  display: list-item;
+}
+
+.markdown-body a {
+  background-color: initial;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline-width: 0;
+}
+
+.markdown-body strong {
+  font-weight: inherit;
+  font-weight: bolder;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+  margin: .67em 0;
+}
+
+.markdown-body img {
+  border-style: none;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre {
+  font-family: monospace,monospace;
+  font-size: 1em;
+}
+
+.markdown-body hr {
+  box-sizing: initial;
+  height: 0;
+  overflow: visible;
+}
+
+.markdown-body input {
+  font: inherit;
+  margin: 0;
+}
+
+.markdown-body input {
+  overflow: visible;
+}
+
+.markdown-body [type=checkbox] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body * {
+  box-sizing: border-box;
+}
+
+.markdown-body input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.markdown-body a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body strong {
+  font-weight: 600;
+}
+
+.markdown-body hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #dfe2e5;
+}
+
+.markdown-body hr:after,
+.markdown-body hr:before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr:after {
+  clear: both;
+}
+
+.markdown-body table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body details summary {
+  cursor: pointer;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  border: 1px solid #d1d5da;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #d1d5da;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body h1 {
+  font-size: 32px;
+}
+
+.markdown-body h1,
+.markdown-body h2 {
+  font-weight: 600;
+}
+
+.markdown-body h2 {
+  font-size: 24px;
+}
+
+.markdown-body h3 {
+  font-size: 20px;
+}
+
+.markdown-body h3,
+.markdown-body h4 {
+  font-weight: 600;
+}
+
+.markdown-body h4 {
+  font-size: 16px;
+}
+
+.markdown-body h5 {
+  font-size: 14px;
+}
+
+.markdown-body h5,
+.markdown-body h6 {
+  font-weight: 600;
+}
+
+.markdown-body h6 {
+  font-size: 12px;
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+}
+
+.markdown-body ol,
+.markdown-body ul {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ol ol ol,
+.markdown-body ol ul ol,
+.markdown-body ul ol ol,
+.markdown-body ul ul ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body code,
+.markdown-body pre {
+  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body input::-webkit-inner-spin-button,
+.markdown-body input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.markdown-body :checked+.radio-label {
+  position: relative;
+  z-index: 1;
+  border-color: #0366d6;
+}
+
+.markdown-body hr {
+  border-bottom-color: #eee;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  border: 1px solid #d1d5da;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #d1d5da;
+}
+
+.markdown-body:after,
+.markdown-body:before {
+  display: table;
+  content: "";
+}
+
+.markdown-body:after {
+  clear: both;
+}
+
+.markdown-body>:first-child {
+  margin-top: 0!important;
+}
+
+.markdown-body>:last-child {
+  margin-bottom: 0!important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body blockquote,
+.markdown-body details,
+.markdown-body dl,
+.markdown-body ol,
+.markdown-body p,
+.markdown-body pre,
+.markdown-body table,
+.markdown-body ul {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body hr {
+  height: .25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #e1e4e8;
+  border: 0;
+}
+
+.markdown-body blockquote {
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: .25em solid #dfe2e5;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+}
+
+.markdown-body h1,
+.markdown-body h2 {
+  padding-bottom: .3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.markdown-body h2 {
+  font-size: 1.5em;
+}
+
+.markdown-body h3 {
+  font-size: 1.25em;
+}
+
+.markdown-body h4 {
+  font-size: 1em;
+}
+
+.markdown-body h5 {
+  font-size: .875em;
+}
+
+.markdown-body h6 {
+  font-size: .85em;
+  color: #6a737d;
+}
+
+.markdown-body ol,
+.markdown-body ul {
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ol ul,
+.markdown-body ul ol,
+.markdown-body ul ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li {
+  word-wrap: break-all;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body li+li, .markdown-body li > ul {
+  margin-top: .25em;
+}
+
+.markdown-body ul li.task-list-item {
+  position: relative;
+  appearance: none;
+  list-style: none;
+}
+
+.markdown-body ul li.task-list-item.checked {
+  text-decoration-line: line-through;
+  color: #6e6e6e;
+}
+
+.markdown-body ul li.task-list-item:not(.checked) {
+  color: initial;
+}
+
+.markdown-body ul li.task-list-item::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  background-color: #fff;
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  border-radius: 2px;
+  border: 2px solid #757575;
+}
+
+.markdown-body ul li.task-list-item.checked::before {
+  background-color: #1976d2;
+  border-color: #1976d2;
+}
+
+.markdown-body ul li.task-list-item.checked::after {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 5px;
+  width: 4px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body table {
+  width: 100%;
+  overflow: auto;
+}
+
+.markdown-body table th {
+  font-weight: 600;
+}
+
+.markdown-body table td,
+.markdown-body table th {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+.markdown-body table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  box-sizing: initial;
+  background-color: #fff;
+}
+
+.markdown-body p > img {
+  display: block;
+  margin: 0 auto;
+}
+
+.markdown-body img[align=right] {
+  padding-left: 20px;
+}
+
+.markdown-body img[align=left] {
+  padding-right: 20px;
+}
+
+.markdown-body code {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27,31,35,.05);
+  border-radius: 3px;
+}
+
+.markdown-body pre {
+  word-wrap: normal;
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+}
+
+.markdown-body pre code {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: initial;
+  border: 0;
+}
+
+.markdown-body mark {
+  display: inline-flex;
+  background-color: #fff8c5;
+}
+          .ace-tm{ background: transparent!important; }.ace_static_highlight{ font-size: unset!important; }.ace_static_highlight {font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', 'Droid Sans Mono', monospace;font-size: 12px;white-space: pre-wrap}.ace_static_highlight .ace_gutter {width: 2em;text-align: right;padding: 0 3px 0 0;margin-right: 3px;contain: none;}.ace_static_highlight.ace_show_gutter .ace_line {padding-left: 2.6em;}.ace_static_highlight .ace_line { position: relative; }.ace_static_highlight .ace_gutter-cell {-moz-user-select: -moz-none;-khtml-user-select: none;-webkit-user-select: none;user-select: none;top: 0;bottom: 0;left: 0;position: absolute;}.ace_static_highlight .ace_gutter-cell:before {content: counter(ace_line, decimal);counter-increment: ace_line;}.ace_static_highlight {counter-reset: ace_line;}.ace-tm .ace_gutter {background: #f0f0f0;color: #333;}.ace-tm .ace_print-margin {width: 1px;background: #e8e8e8;}.ace-tm .ace_fold {background-color: #6B72E6;}.ace-tm {background-color: #FFFFFF;color: black;}.ace-tm .ace_cursor {color: black;}.ace-tm .ace_invisible {color: rgb(191, 191, 191);}.ace-tm .ace_storage,.ace-tm .ace_keyword {color: blue;}.ace-tm .ace_constant {color: rgb(197, 6, 11);}.ace-tm .ace_constant.ace_buildin {color: rgb(88, 72, 246);}.ace-tm .ace_constant.ace_language {color: rgb(88, 92, 246);}.ace-tm .ace_constant.ace_library {color: rgb(6, 150, 14);}.ace-tm .ace_invalid {background-color: rgba(255, 0, 0, 0.1);color: red;}.ace-tm .ace_support.ace_function {color: rgb(60, 76, 114);}.ace-tm .ace_support.ace_constant {color: rgb(6, 150, 14);}.ace-tm .ace_support.ace_type,.ace-tm .ace_support.ace_class {color: rgb(109, 121, 222);}.ace-tm .ace_keyword.ace_operator {color: rgb(104, 118, 135);}.ace-tm .ace_string {color: rgb(3, 106, 7);}.ace-tm .ace_comment {color: rgb(76, 136, 107);}.ace-tm .ace_comment.ace_doc {color: rgb(0, 102, 255);}.ace-tm .ace_comment.ace_doc.ace_tag {color: rgb(128, 159, 191);}.ace-tm .ace_constant.ace_numeric {color: rgb(0, 0, 205);}.ace-tm .ace_variable {color: rgb(49, 132, 149);}.ace-tm .ace_xml-pe {color: rgb(104, 104, 91);}.ace-tm .ace_entity.ace_name.ace_function {color: #0000A2;}.ace-tm .ace_heading {color: rgb(12, 7, 255);}.ace-tm .ace_list {color:rgb(185, 6, 144);}.ace-tm .ace_meta.ace_tag {color:rgb(0, 22, 142);}.ace-tm .ace_string.ace_regex {color: rgb(255, 0, 0)}.ace-tm .ace_marker-layer .ace_selection {background: rgb(181, 213, 255);}.ace-tm.ace_multiselect .ace_selection.ace_start {box-shadow: 0 0 3px 0px white;}.ace-tm .ace_marker-layer .ace_step {background: rgb(252, 255, 0);}.ace-tm .ace_marker-layer .ace_stack {background: rgb(164, 229, 101);}.ace-tm .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid rgb(192, 192, 192);}.ace-tm .ace_marker-layer .ace_active-line {background: rgba(0, 0, 0, 0.07);}.ace-tm .ace_gutter-active-line {background-color : #dcdcdc;}.ace-tm .ace_marker-layer .ace_selected-word {background: rgb(250, 250, 255);border: 1px solid rgb(200, 200, 250);}.ace-tm .ace_indent-guide {background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;}
+        </style>
+      </head>
+      <body>
+        <article class="markdown-body">
+          <h2>如何利用享元模式优化文本编辑器的内存占用？</h2>
+<p>2023/1/8</p>
+<h3>定义</h3>
+<p>​    享元模式的意图是<strong>复用对象</strong>，节省内存，前提是享元对象是不可变对象。不可变指：一旦通过构造函数初始化完成之后，它的<strong>状态（对象的成员变量或者属性）就不会再被修改了。</strong></p>
+<h3>原理</h3>
+<p>​    当系统中存在大量**&quot;重复&quot;**(整体或者部分属性重复)的对象时，就可以利用享元模式，将“重复&quot;对象设计成享元对象，在内存中只保留一份实例，供多处代码引用，以此减少内存中的对象数量，节省内存.若只是对象的部分字段重复，也可提取出来设计成享元对象。</p>
+<h3>实现</h3>
+<p>​    主要是通过工厂模式，在工厂类中，通过一个Map或者List来缓存已经创建好的享元对象，以达到复用的目的。</p>
+<p><strong>实例</strong></p>
+<p>棋局游戏</p>
+<p>​    每把棋局有一个棋盘对象ChessBoard,一个棋盘对象<strong>ChessBoard</strong>存着30个棋子对象<strong>ChessPiece</strong>。如果有一万个棋局，就有30万个棋子对象<strong>ChessPiece</strong>，如何节省内存呢?</p>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessPiece</span> {<span class='ace_comment'>//<span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>子</span></span>
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>id</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_support ace_function'>String</span> <span class='ace_identifier'>text</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_identifier'>Color</span> <span class='ace_identifier'>color</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionX</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionY</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_identifier'>ChessPiece</span>(<span class='ace_keyword'>int</span> <span class='ace_identifier'>id</span>, <span class='ace_support ace_function'>String</span> <span class='ace_identifier'>text</span>, <span class='ace_identifier'>Color</span> <span class='ace_identifier'>color</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionX</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionY</span>) {
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>id</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>id</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>text</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>text</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>color</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>color</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>positionX</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>positionX</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>positionY</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>positionX</span>;
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_keyword'>static</span> <span class='ace_keyword'>enum</span> <span class='ace_identifier'>Color</span> {
+</div><div class='ace_line'>    <span class='ace_identifier'>RED</span>, <span class='ace_identifier'>BLACK</span>
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_comment'>// ...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span><span class='ace_cjk' style='width:NaNpx'>其</span><span class='ace_cjk' style='width:NaNpx'>他</span><span class='ace_cjk' style='width:NaNpx'>属</span><span class='ace_cjk' style='width:NaNpx'>性</span><span class='ace_cjk' style='width:NaNpx'>和</span>getter/setter<span class='ace_cjk' style='width:NaNpx'>方</span><span class='ace_cjk' style='width:NaNpx'>法</span>...</span>
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessBoard</span> {<span class='ace_comment'>//<span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>局</span></span>
+</div><div class='ace_line'>    <span class='ace_keyword'>private</span> <span class='ace_identifier'>Map</span><span class='ace_keyword ace_operator'>&#60;</span><span class='ace_support ace_function'>Integer</span>, <span class='ace_identifier'>ChessPiece</span><span class='ace_keyword ace_operator'>></span> <span class='ace_identifier'>chessPieces</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_keyword'>new</span> <span class='ace_identifier'>HashMap</span><span class='ace_keyword ace_operator'>&#60;></span>();
+</div><div class='ace_line'>    <span class='ace_keyword'>public</span> <span class='ace_identifier'>ChessBoard</span>() {
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>    <span class='ace_identifier'>init</span>();
+</div><div class='ace_line'>    }
+</div><div class='ace_line'>    <span class='ace_keyword'>private</span> <span class='ace_keyword'>void</span> <span class='ace_identifier'>init</span>() {
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>    <span class='ace_identifier'>chessPieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>1</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPiece</span>(<span class='ace_constant ace_numeric'>1</span>, <span class='ace_string'>&#34;<span class='ace_cjk' style='width:NaNpx'>車</span>&#34;</span>, <span class='ace_identifier'>ChessPiece</span>.<span class='ace_identifier'>Color</span>.<span class='ace_identifier'>BLACK</span>, <span class='ace_constant ace_numeric'>0</span>, <span class='ace_constant ace_numeric'>0</span>));
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>    <span class='ace_identifier'>chessPieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>2</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPiece</span>(<span class='ace_constant ace_numeric'>2</span>,<span class='ace_string'>&#34;<span class='ace_cjk' style='width:NaNpx'>馬</span>&#34;</span>, <span class='ace_identifier'>ChessPiece</span>.<span class='ace_identifier'>Color</span>.<span class='ace_identifier'>BLACK</span>, <span class='ace_constant ace_numeric'>0</span>, <span class='ace_constant ace_numeric'>1</span>));
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>    <span class='ace_comment'>//...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span><span class='ace_cjk' style='width:NaNpx'>摆</span><span class='ace_cjk' style='width:NaNpx'>放</span><span class='ace_cjk' style='width:NaNpx'>其</span><span class='ace_cjk' style='width:NaNpx'>他</span><span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>子</span><span class='ace_cjk' style='width:NaNpx'>的</span><span class='ace_cjk' style='width:NaNpx'>代</span><span class='ace_cjk' style='width:NaNpx'>码</span>...</span>
+</div><div class='ace_line'>    }
+</div><div class='ace_line'>    <span class='ace_keyword'>public</span> <span class='ace_keyword'>void</span> <span class='ace_identifier'>move</span>(<span class='ace_keyword'>int</span> <span class='ace_identifier'>chessPieceId</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>toPositionX</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>toPositionY</span>) {
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>    <span class='ace_comment'>//...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span>...</span>
+</div><div class='ace_line'>    }
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<p><strong>享元设计</strong></p>
+<p>​    每个棋局的<strong>ChessPiece对象</strong>的id、text、color都是相同的，唯独positionX、positionY不同。可以将棋子的id、text、color属性拆分出来，设计成独立的类，并且作为享元供多个棋盘复用。</p>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_comment'>// <span class='ace_cjk' style='width:NaNpx'>享</span><span class='ace_cjk' style='width:NaNpx'>元</span><span class='ace_cjk' style='width:NaNpx'>类</span></span>
+</div><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessPieceUnit</span> {
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>id</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_support ace_function'>String</span> <span class='ace_identifier'>text</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_identifier'>Color</span> <span class='ace_identifier'>color</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_identifier'>ChessPieceUnit</span>(<span class='ace_keyword'>int</span> <span class='ace_identifier'>id</span>, <span class='ace_support ace_function'>String</span> <span class='ace_identifier'>text</span>, <span class='ace_identifier'>Color</span> <span class='ace_identifier'>color</span>) {
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>id</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>id</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>text</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>text</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>color</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>color</span>;
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_keyword'>static</span> <span class='ace_keyword'>enum</span> <span class='ace_identifier'>Color</span> {
+</div><div class='ace_line'>    <span class='ace_identifier'>RED</span>, <span class='ace_identifier'>BLACK</span>
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_comment'>// ...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span><span class='ace_cjk' style='width:NaNpx'>其</span><span class='ace_cjk' style='width:NaNpx'>他</span><span class='ace_cjk' style='width:NaNpx'>属</span><span class='ace_cjk' style='width:NaNpx'>性</span><span class='ace_cjk' style='width:NaNpx'>和</span>getter<span class='ace_cjk' style='width:NaNpx'>方</span><span class='ace_cjk' style='width:NaNpx'>法</span>...</span>
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_comment'>//<span class='ace_cjk' style='width:NaNpx'>工</span><span class='ace_cjk' style='width:NaNpx'>厂</span><span class='ace_cjk' style='width:NaNpx'>类</span></span>
+</div><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessPieceUnitFactory</span> {
+</div><div class='ace_line'><span class='ace_keyword'>private</span> <span class='ace_keyword'>static</span> <span class='ace_keyword'>final</span> <span class='ace_identifier'>Map</span><span class='ace_keyword ace_operator'>&#60;</span><span class='ace_support ace_function'>Integer</span>, <span class='ace_identifier'>ChessPieceUnit</span><span class='ace_keyword ace_operator'>></span> <span class='ace_identifier'>pieces</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_keyword'>new</span> <span class='ace_identifier'>HashMap</span><span class='ace_keyword ace_operator'>&#60;></span>();
+</div><div class='ace_line'>  <span class='ace_keyword'>static</span> {
+</div><div class='ace_line'>    <span class='ace_identifier'>pieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>1</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPieceUnit</span>(<span class='ace_constant ace_numeric'>1</span>, <span class='ace_string'>&#34;<span class='ace_cjk' style='width:NaNpx'>車</span>&#34;</span>, <span class='ace_identifier'>ChessPieceUnit</span>.<span class='ace_identifier'>Color</span>.<span class='ace_identifier'>BLACK</span>));
+</div><div class='ace_line'>    <span class='ace_identifier'>pieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>2</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPieceUnit</span>(<span class='ace_constant ace_numeric'>2</span>,<span class='ace_string'>&#34;<span class='ace_cjk' style='width:NaNpx'>馬</span>&#34;</span>, <span class='ace_identifier'>ChessPieceUnit</span>.<span class='ace_identifier'>Color</span>.<span class='ace_identifier'>BLACK</span>));
+</div><div class='ace_line'>    <span class='ace_comment'>//...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span><span class='ace_cjk' style='width:NaNpx'>摆</span><span class='ace_cjk' style='width:NaNpx'>放</span><span class='ace_cjk' style='width:NaNpx'>其</span><span class='ace_cjk' style='width:NaNpx'>他</span><span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>子</span><span class='ace_cjk' style='width:NaNpx'>的</span><span class='ace_cjk' style='width:NaNpx'>代</span><span class='ace_cjk' style='width:NaNpx'>码</span>...</span>
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_keyword'>static</span> <span class='ace_identifier'>ChessPieceUnit</span> <span class='ace_identifier'>getChessPiece</span>(<span class='ace_keyword'>int</span> <span class='ace_identifier'>chessPieceId</span>) {
+</div><div class='ace_line'>    <span class='ace_keyword'>return</span> <span class='ace_identifier'>pieces</span>.<span class='ace_identifier'>get</span>(<span class='ace_identifier'>chessPieceId</span>);
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_comment'>//<span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>子</span></span>
+</div><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessPiece</span> {
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_identifier'>ChessPieceUnit</span> <span class='ace_identifier'>chessPieceUnit</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionX</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionY</span>;
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_identifier'>ChessPiece</span>(<span class='ace_identifier'>ChessPieceUnit</span> <span class='ace_identifier'>unit</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionX</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>positionY</span>) {
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>chessPieceUnit</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>unit</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>positionX</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>positionX</span>;
+</div><div class='ace_line'>    <span class='ace_keyword'>this</span>.<span class='ace_identifier'>positionY</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_identifier'>positionY</span>;
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_comment'>// <span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span>getter<span class='ace_cjk' style='width:NaNpx'>、</span>setter<span class='ace_cjk' style='width:NaNpx'>方</span><span class='ace_cjk' style='width:NaNpx'>法</span></span>
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<pre><code class="language-java"><div class='ace-tm'><div class='ace_static_highlight' style='counter-reset:ace_line 0'><div class='ace_line'><span class='ace_comment'>//<span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>盘</span></span>
+</div><div class='ace_line'><span class='ace_keyword'>public</span> <span class='ace_keyword'>class</span> <span class='ace_identifier'>ChessBoard</span> {
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_identifier'>Map</span><span class='ace_keyword ace_operator'>&#60;</span><span class='ace_support ace_function'>Integer</span>, <span class='ace_identifier'>ChessPiece</span><span class='ace_keyword ace_operator'>></span> <span class='ace_identifier'>chessPieces</span> <span class='ace_keyword ace_operator'>=</span> <span class='ace_keyword'>new</span> <span class='ace_identifier'>HashMap</span><span class='ace_keyword ace_operator'>&#60;></span>();
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_identifier'>ChessBoard</span>() {
+</div><div class='ace_line'>    <span class='ace_identifier'>init</span>();
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_keyword'>private</span> <span class='ace_keyword'>void</span> <span class='ace_identifier'>init</span>() {
+</div><div class='ace_line'>    <span class='ace_identifier'>chessPieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>1</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPiece</span>(
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span><span class='ace_indent-guide'>    </span>    <span class='ace_identifier'>ChessPieceUnitFactory</span>.<span class='ace_identifier'>getChessPiece</span>(<span class='ace_constant ace_numeric'>1</span>), <span class='ace_constant ace_numeric'>0</span>,<span class='ace_constant ace_numeric'>0</span>));
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span>  
+</div><div class='ace_line'>    <span class='ace_identifier'>chessPieces</span>.<span class='ace_identifier'>put</span>(<span class='ace_constant ace_numeric'>1</span><span class='ace_cjk' style='width:NaNpx'>（</span><span class='ace_cjk' style='width:NaNpx'>为</span><span class='ace_cjk' style='width:NaNpx'>啥</span><span class='ace_cjk' style='width:NaNpx'>是</span><span class='ace_constant ace_numeric'>1</span><span class='ace_keyword ace_operator'>?</span><span class='ace_cjk' style='width:NaNpx'>应</span><span class='ace_cjk' style='width:NaNpx'>该</span><span class='ace_cjk' style='width:NaNpx'>为</span><span class='ace_constant ace_numeric'>2</span><span class='ace_cjk' style='width:NaNpx'>）</span>, <span class='ace_keyword'>new</span> <span class='ace_identifier'>ChessPiece</span>(
+</div><div class='ace_line'><span class='ace_indent-guide'>    </span><span class='ace_indent-guide'>    </span>    <span class='ace_identifier'>ChessPieceUnitFactory</span>.<span class='ace_identifier'>getChessPiece</span>(<span class='ace_constant ace_numeric'>2</span>), <span class='ace_constant ace_numeric'>1</span>,<span class='ace_constant ace_numeric'>0</span>));
+</div><div class='ace_line'>    <span class='ace_comment'>//...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span><span class='ace_cjk' style='width:NaNpx'>摆</span><span class='ace_cjk' style='width:NaNpx'>放</span><span class='ace_cjk' style='width:NaNpx'>其</span><span class='ace_cjk' style='width:NaNpx'>他</span><span class='ace_cjk' style='width:NaNpx'>棋</span><span class='ace_cjk' style='width:NaNpx'>子</span><span class='ace_cjk' style='width:NaNpx'>的</span><span class='ace_cjk' style='width:NaNpx'>代</span><span class='ace_cjk' style='width:NaNpx'>码</span>...</span>
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>  <span class='ace_keyword'>public</span> <span class='ace_keyword'>void</span> <span class='ace_identifier'>move</span>(<span class='ace_keyword'>int</span> <span class='ace_identifier'>chessPieceId</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>toPositionX</span>, <span class='ace_keyword'>int</span> <span class='ace_identifier'>toPositionY</span>) {
+</div><div class='ace_line'>    <span class='ace_comment'>//...<span class='ace_cjk' style='width:NaNpx'>省</span><span class='ace_cjk' style='width:NaNpx'>略</span>...</span>
+</div><div class='ace_line'>  }
+</div><div class='ace_line'>}
+</div></div></div></code></pre>
+<p><strong>文本编辑器实例</strong></p>
+<p>​    在文本编辑器中，我们每敲一个文字，都会调用Editor类中的appendCharacter()方法，创建一个新的Character对象，保存到chars数组中。如果一个文本文件中，有上万、十几万、几十万的文字，那我们就要在内存中存储这么多Character对象。那有没有办法可以节省一点内存呢？</p>
+<p>​    实际上，在一个文本文件中，用到的字体格式不会太多，毕竟不大可能有人把每个文字都设置成不同的格式。所以，对于字体格式，我们可以将它设计成享元，让不同的文字共享使用。</p>
+<h3>享元模式vs单例、缓存、对象池</h3>
+<h4>单例模式区别</h4>
+<p>​    单例模式中，一个类只能创建一个对象，而在享元模式中，一个类可以创建多个对象，每个对象被多处代码引用共享。</p>
+<h4>缓存的区别</h4>
+<p>​    通过工厂类来“缓存”已经创建好的对象。这里的“缓存”实际上是“存储”的意思，跟我们平时所说的“数据库缓存”“CPU缓存”“MemCache缓存”是两回事。我们平时所讲的缓存，主要是为了提高访问效率，而非复用。</p>
+<h4>对象池的区别</h4>
+<p>​    对象池、连接池（比如数据库连接池）、线程池等也是为了复用，那它们跟享元模式有什么区别呢？</p>
+<p>​    池化技术中的“复用”可以理解为“重复使用”，主要目的是节省时间（比如从数据库池中取一个连接，不需要重新创建）。在任意时刻，每一个对象、连接、线程，并不会被多处使用，而是被一个使用者独占，当使用完成之后，放回到池中，再由其他使用者重复利用。享元模式中的“复用”可以理解为“共享使用”，在整个生命周期中，都是被所有使用者共享的，主要目的是节省空间</p>
+
+        </article>
+      </body>
+      </html>
